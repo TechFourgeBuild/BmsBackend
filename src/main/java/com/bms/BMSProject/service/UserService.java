@@ -25,11 +25,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private static final String ADMIN_SECRET_KEY = "bookit-admin-2026";
     //register
 
     public User register(UserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateResourceException("User with email '" + request.getEmail() + "' already exists");
+        }
+
+        Role role = Role.USER;
+        if (request.getSecretKey() != null && request.getSecretKey().equals(ADMIN_SECRET_KEY)) {
+            role = Role.ADMIN;
         }
 
         User user = User.builder()
