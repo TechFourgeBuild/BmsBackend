@@ -43,7 +43,7 @@ public class UserService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone())
-                .role(request.getRole() != null ? request.getRole() : Role.USER)
+                .role(role)
                 .build();
 
         return userRepository.save(user);
