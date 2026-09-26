@@ -62,8 +62,7 @@ public class SecurityConfig {
                 "http://localhost:5173",
                 "http://localhost:5174",
                 "http://127.0.0.1:5173",
-                "https://bms-frontend-snowy.vercel.app/"    // ✅ Vercel URL (change karo)
-                //"https://your-frontend.netlify.app"     // ✅ Netlify URL (change karo)
+                "https://bms-frontend-snowy.vercel.app"
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

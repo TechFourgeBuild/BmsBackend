@@ -6,12 +6,15 @@ import com.bms.BMSProject.dto.LoginRequest;
 import com.bms.BMSProject.dto.UserRequest;
 import com.bms.BMSProject.entity.User;
 import com.bms.BMSProject.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -27,15 +30,28 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request)
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpServletResponse response)
     {
-        AuthResponse response = userService.login(request);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(response);
+        AuthResponse res = userService.login(request,response);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
-    /* // 🎯 login() method ab REDUNDANT hai — Spring Security ka
-    // AuthenticationManager + DaoAuthenticationProvider + CustomUserDetailsService
-    // yehi kaam automatically karenge (yaad kar AuthController.login() pattern)
-    // Ise DELETE kar sakta hai, ya sirf profile-fetch ke liye rakh sakta hai*/
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, String> result = userService.refreshToken(request, response);
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        userService.logout(response);
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+    }
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers()
