@@ -91,6 +91,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/theaters/**").permitAll()
                         .requestMatchers("/api/shows/**").permitAll()
                         .requestMatchers("/api/cities/**").permitAll()
+                        .requestMatchers("/api/ping").permitAll()
                         .anyRequest().authenticated()
                 )
 
